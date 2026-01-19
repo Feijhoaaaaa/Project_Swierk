@@ -3,8 +3,8 @@
 #include <random>
 
 
-const int WinWidth = 600;
-const int WinHeight = 800;
+constexpr int WinWidth = 600;
+constexpr int WinHeight = 800;
 
 const sf::Color SkyColor = sf::Color(0, 26, 56);
 const sf::Color SprusColor = sf::Color(61, 108, 81);
@@ -65,11 +65,11 @@ SprusSteps couseSprusSteps(float posX, float posY) {
 
     for (int i = 0; i < 6; i++) {
         float size = static_cast<float>(WinWidth) / 3 - i * 40;
-        float posX = s.posX + i * 40;
-        float posY = s.posY - i * 30;
+        float posx = s.posX + i * 40;
+        float posy = s.posY - i * 30;
         sf::Color color = SprusColor;
         sf::Color outlineColor = SprusOutlineColor;
-        Triangle t = couseTriangle(size, posX, posY, color, outlineColor);
+        Triangle t = couseTriangle(size, posx, posy, color, outlineColor);
         s.sprusSteps.push_back(t);
     }
 
@@ -176,7 +176,7 @@ struct SnowFlake {
     float driftTime;
 };
 
-SnowFlake couseSnowFlakes(sf::Font font, float with) {
+SnowFlake couseSnowFlakes(const sf::Font &font, const float with) {
     std::mt19937 gen(std::random_device{}());
 
     std::uniform_real_distribution<float> size(-10.f, 20.f);
@@ -188,7 +188,7 @@ SnowFlake couseSnowFlakes(sf::Font font, float with) {
     s.text.setString("*");
     s.text.setFont(font);
     s.text.setCharacterSize(size(gen));
-    s.text.setFillColor(sf::Color::White);
+    //s.text.setFillColor(sf::Color::White);
     s.text.setPosition(posX(gen), speed(gen));
     s.velosity = sf::Vector2f(drift(gen), speed(gen));
     s.driftTime = drift(gen);
@@ -220,7 +220,6 @@ struct Star {
 };
 
 Star couseStar(sf::Vector2f radius, sf::Vector2f pos, sf::Color color, sf::Color outlineColor) {
-    const float PI = 3.14159265f;
     Star s;
     s.radius = radius;
     s.pos = pos;
@@ -230,6 +229,7 @@ Star couseStar(sf::Vector2f radius, sf::Vector2f pos, sf::Color color, sf::Color
     s.shape.setPointCount(10); // 5 outer + 5 inner points
 
     for (int i = 0; i < 10; i++) {
+        constexpr float PI = 3.14159265f;
         float angle = i * 2 * PI / 10 - PI / 2 + PI; // start pointing up
         float r = (i % 2 == 0) ? radius.y : radius.x; // alternate outer/inner
         float x = pos.x + std::cos(angle) * r;
@@ -243,31 +243,6 @@ Star couseStar(sf::Vector2f radius, sf::Vector2f pos, sf::Color color, sf::Color
 
     return s;
 }
-
-// struct CristmasBauble {
-//     sf::Vector2f size;
-//     sf::Vector2f pos;
-//     sf::Color color;
-//     sf::Color outlineColor;
-//     std::vector<sf::Shape*> shape;
-// };
-// std::vector<sf::Shape*> couseCristmasBauble(sf::Vector2f size, sf::Vector2f pos, sf::Color color, sf::Color outlineColor) {
-//     CristmasBauble b;
-//     b.size = size;
-//     b.pos = pos;
-//     b.color = color;
-//     b.outlineColor = outlineColor;
-//     Rectangle r = couseRectangle(size.x/10,size.y/2, pos.x,pos.y, RibbonColor, RibbonOutlineColor);
-//     r.shape.setOrigin(r.shape.getSize().x / 2, 0);
-//     r.shape.setPosition(pos.x + b.size.x / 2, 0);
-//     Circle c = couseCircle(size.x, pos, b.color, b.outlineColor);
-//     c.shape.setOrigin(c.shape.getRadius()/2, c.shape.getRadius()/2);
-//     c.shape.setPosition(pos.x + b.size.x / 2, pos.y + b.size.y / 2);
-//     std::vector<sf::Shape*> shape;
-//     shape.push_back(&r.shape);
-//     shape.push_back(&c.shape);
-//     return shape;
-// }
 struct CristmasBauble {
     Rectangle ribbon;
     Circle ball;
@@ -390,9 +365,9 @@ int main() {
             if (event.type == sf::Event::Closed)
                 win.close();
         }
-        for (auto &s: snow) {
-            snowUpdate(s, dt);
-            respawnSnowFlake(s, WinHeight, WinWidth);
+        for (auto &snow_flake: snow) {
+            snowUpdate(snow_flake, dt);
+            respawnSnowFlake(snow_flake, WinHeight, WinWidth);
         }
         win.clear(SkyColor);
 
@@ -414,8 +389,8 @@ int main() {
         }
 
 
-        for (auto &s: snow)
-            win.draw(s.text);
+        for (auto &snow_flake: snow)
+            win.draw(snow_flake.text);
 
         win.display();
     }
