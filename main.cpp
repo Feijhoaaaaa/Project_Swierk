@@ -243,6 +243,7 @@ Star couseStar(sf::Vector2f radius, sf::Vector2f pos, sf::Color color, sf::Color
 
     return s;
 }
+
 struct CristmasBauble {
     Rectangle ribbon;
     Circle ball;
