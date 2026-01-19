@@ -179,7 +179,7 @@ struct SnowFlake {
 SnowFlake couseSnowFlakes(const sf::Font &font, const float with) {
     std::mt19937 gen(std::random_device{}());
 
-    std::uniform_real_distribution<float> size(-10.f, 20.f);
+    std::uniform_real_distribution<float> size(8.f, 30.f);
     std::uniform_real_distribution<float> drift(-20.0f, 20.0f);
     std::uniform_real_distribution<float> speed(0.1f, 100.0f);
     std::uniform_real_distribution<float> posX(0, with);
@@ -188,7 +188,7 @@ SnowFlake couseSnowFlakes(const sf::Font &font, const float with) {
     s.text.setString("*");
     s.text.setFont(font);
     s.text.setCharacterSize(size(gen));
-    //s.text.setFillColor(sf::Color::White);
+    s.text.setFillColor(sf::Color::White);
     s.text.setPosition(posX(gen), speed(gen));
     s.velosity = sf::Vector2f(drift(gen), speed(gen));
     s.driftTime = drift(gen);
@@ -352,7 +352,7 @@ int main() {
         // handle error
         return -1;
     }
-    for (int i = 0; i < 2048; i++) {
+    for (int i = 0; i < 1024; i++) {
         snow.push_back(couseSnowFlakes(font, WinWidth));
     }
     sf::Clock clock;
